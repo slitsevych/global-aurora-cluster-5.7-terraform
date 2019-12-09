@@ -70,7 +70,7 @@ resource "aws_rds_cluster_instance" "aurora-primary" {
 # Transforming previously created cluster into global cluster
 resource "null_resource" "join_cluster" {
   provisioner "local-exec" {
-    command = "aws rds create-global-cluster --global-cluster-identifier global-1 --source-db-cluster-identifier ${aws_rds_cluster.primary.arn} && sleep 60"
+    command = "aws rds create-global-cluster --global-cluster-identifier ${var.global_id} --source-db-cluster-identifier ${aws_rds_cluster.primary.arn} && sleep 60"
   }
   depends_on = [
     aws_rds_cluster.primary,
@@ -89,7 +89,7 @@ resource "aws_rds_cluster" "secondary" {
   skip_final_snapshot       = true
   vpc_security_group_ids    = [var.s_group["secondary"]]
   engine_mode               = "global"
-  global_cluster_identifier = "global-1"
+  global_cluster_identifier = var.global_id
 
   lifecycle {
     ignore_changes = all
@@ -126,14 +126,14 @@ resource "aws_rds_cluster_instance" "aurora-secondary" {
 resource "null_resource" "remove_from_cluster_secondary" {
   count = var.delete != "false" ? 1 : 0
   provisioner "local-exec" {
-    command = "aws rds remove-from-global-cluster --global-cluster-identifier global-1 --db-cluster-identifier ${aws_rds_cluster.secondary.arn} && sleep 180"
+    command = "aws rds remove-from-global-cluster --global-cluster-identifier ${var.global_id} --db-cluster-identifier ${aws_rds_cluster.secondary.arn} && sleep 180"
   }
 }
 
 resource "null_resource" "remove_from_cluster_primary" {
   count = var.delete != "false" ? 1 : 0
   provisioner "local-exec" {
-    command = "aws rds remove-from-global-cluster --global-cluster-identifier global-1 --db-cluster-identifier ${aws_rds_cluster.primary.arn} && sleep 90"
+    command = "aws rds remove-from-global-cluster --global-cluster-identifier ${var.global_id} --db-cluster-identifier ${aws_rds_cluster.primary.arn} && sleep 90"
   }
   depends_on = [
     null_resource.remove_from_cluster_secondary
@@ -143,7 +143,7 @@ resource "null_resource" "remove_from_cluster_primary" {
 resource "null_resource" "delete_cluster" {
   count = var.delete != "false" ? 1 : 0
   provisioner "local-exec" {
-    command = "aws rds delete-global-cluster --global-cluster-identifier global-1"
+    command = "aws rds delete-global-cluster --global-cluster-identifier ${var.global_id}"
   }
 
   depends_on = [

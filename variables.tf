@@ -12,6 +12,10 @@ variable "env" {
   }
 }
 
+variable "global_id" {
+  default = "global-1"
+}
+
 variable "delete" {
   default = "false"
 }
