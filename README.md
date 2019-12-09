@@ -8,11 +8,11 @@
 **Module logic is as follows:**
 *************************
 1.  Initializating two aws providers in us-east-1 and us-east-2 regions
-2.  Creating two DB subnet groups
-3.  Creating primary cluster with 5.7.mysql_aurora.2.07.0 engine version and 1 db instance within this cluster
-4.  Transforming cluster into global cluster in one region
-5.  Adding secondary region by creating cluster with instance in different region
-6.  Adding null resources required to remove clusters from global cluster and then deleting the global cluster itself
+2.  Creating two DB subnet groups in two regions
+3.  Creating primary cluster with 5.7.mysql_aurora.2.07.0 engine version and 1 db instance within this cluster in one region
+4.  Transforming cluster into global cluster
+5.  Adding secondary region by creating additional cluster with read-replica instance
+6.  Defining null resources required to remove clusters from global cluster and then deleting the global cluster itself
 
 Steps to remove all resources:
 *  Execute `terraform apply -var 'delete=true'`
