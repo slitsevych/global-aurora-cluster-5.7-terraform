@@ -1,8 +1,8 @@
 **Repository contains terraform module creating global cluster consisting of two clusters with Aurora 5.7 version in two different AWS regions:** 
 
-terraform 0.12.7
-plugin "null" (hashicorp/null) 2.1.2
-plugin "aws" (hashicorp/aws) 2.41.0
+* terraform 0.12.7
+* plugin "null" (hashicorp/null) 2.1.2
+* plugin "aws" (hashicorp/aws) 2.41.0
 
 *************************
 **Module logic is as follows:**
