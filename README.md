@@ -16,8 +16,8 @@ Steps to remove all resources:
 
 
 **Important nuances:**
-* secondary cluster must not contain database_name, master_username and master_password parameters 
-* secondary cluster is recommended to be added with lifecycle ignoring all further changes
-* global_cluster_identifier needs to be indicated through its name and not via data.aws_rds_cluster resource
-* instance_class needs to be of supported type: db.r4.large or higher
-* correct depends_on values are required for almost all resources
+* secondary cluster must not contain **database_name, master_username and master_password** parameters 
+* secondary cluster is recommended to be added with **lifecycle** *ignoring all* further changes
+* **global_cluster_identifier** needs to be indicated through its name and **not** via *data.aws_rds_cluster resource*
+* instance_class needs to be of supported type: **db.r4.large** or higher
+* correct **depends_on** values are required for almost all resources
