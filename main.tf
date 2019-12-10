@@ -70,7 +70,7 @@ resource "aws_rds_cluster_instance" "aurora-primary" {
 # Transforming previously created cluster into global cluster
 resource "null_resource" "join_cluster" {
   provisioner "local-exec" {
-    command = "aws rds create-global-cluster --global-cluster-identifier ${var.global_id} --source-db-cluster-identifier ${aws_rds_cluster.primary.arn} && sleep 60"
+    command = "aws rds create-global-cluster --global-cluster-identifier ${var.global_id} --source-db-cluster-identifier ${aws_rds_cluster.primary.arn} && sleep 240"
   }
   depends_on = [
     aws_rds_cluster.primary,
@@ -94,6 +94,10 @@ resource "aws_rds_cluster" "secondary" {
   lifecycle {
     ignore_changes = all
   }
+
+  depends_on = [
+    null_resource.join_cluster
+  ]
 }
 
 resource "aws_rds_cluster_instance" "aurora-secondary" {
