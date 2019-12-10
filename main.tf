@@ -18,17 +18,15 @@ provider "aws" {
 
 # Creating DB subnet groups in two regions
 resource "aws_db_subnet_group" "aurora_subnet_primary" {
-  provider    = aws.primary
-  name        = "${var.env["first"]}-aurorasubnet"
-  description = "${var.env["first"]}-aurora subnet group"
-  subnet_ids  = var.db_subnets["primary"]
+  provider   = aws.primary
+  name       = "${var.env["first"]}-aurora-subnet"
+  subnet_ids = var.db_subnets["primary"]
 }
 
 resource "aws_db_subnet_group" "aurora_subnet_secondary" {
-  provider    = aws.secondary
-  name        = "${var.env["second"]}-aurorasubnet"
-  description = "${var.env["second"]}-aurora subnet group"
-  subnet_ids  = var.db_subnets["secondary"]
+  provider   = aws.secondary
+  name       = "${var.env["second"]}-aurora-subnet"
+  subnet_ids = var.db_subnets["secondary"]
 }
 
 # Provisioning primary DB cluster and one instance within it
@@ -70,11 +68,20 @@ resource "aws_rds_cluster_instance" "aurora-primary" {
 # Transforming previously created cluster into global cluster
 resource "null_resource" "join_cluster" {
   provisioner "local-exec" {
-    command = "aws rds create-global-cluster --global-cluster-identifier ${var.global_id} --source-db-cluster-identifier ${aws_rds_cluster.primary.arn} && sleep 240"
+    command = "aws rds create-global-cluster --global-cluster-identifier ${var.global_id} --source-db-cluster-identifier ${aws_rds_cluster.primary.arn}"
   }
   depends_on = [
     aws_rds_cluster.primary,
     aws_rds_cluster_instance.aurora-primary
+  ]
+}
+
+resource "null_resource" "delay" {
+  provisioner "local-exec" {
+    command = "sleep 240"
+  }
+  depends_on = [
+    null_resource.join_cluster
   ]
 }
 
@@ -96,7 +103,8 @@ resource "aws_rds_cluster" "secondary" {
   }
 
   depends_on = [
-    null_resource.join_cluster
+    null_resource.join_cluster,
+    null_resource.delay
   ]
 }
 
