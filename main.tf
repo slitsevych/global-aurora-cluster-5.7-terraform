@@ -134,6 +134,8 @@ resource "aws_rds_cluster_instance" "aurora-secondary" {
 # Null resources required to be applied before destroying resources: removing secondary cluster, then primary cluster and eventually removing the global cluster
 # In order to execute the commands below it is recommended to invoke " terraform apply -var 'delete=true' " ; after that it is possible to delete the rest of the
 # resources with simple "terraform destroy"
+# Kindly note that "remove-from-global-cluster" function does not erase/delete neither cluster nor db instance, it only changes the engine mode from
+# "global" to "provisioned" (regional)
 
 resource "null_resource" "remove_from_cluster_secondary" {
   count = var.delete != "false" ? 1 : 0
