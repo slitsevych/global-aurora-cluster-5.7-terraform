@@ -28,10 +28,6 @@ variable "dbname" {
   default = "aurora"
 }
 
-variable "cred_path" {
-  default = "/home/aim/.aws/credentials"
-}
-
 variable "s_group" {
   default = {
     "primary"   = "sg-01696e7d5bc7ae46c"
