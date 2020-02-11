@@ -5,13 +5,11 @@ provider "aws" {
 }
 
 provider "aws" {
-  shared_credentials_file = var.cred_path
   region                  = var.region["primary"]
   alias                   = "primary"
 }
 
 provider "aws" {
-  shared_credentials_file = var.cred_path
   region                  = var.region["secondary"]
   alias                   = "secondary"
 }
